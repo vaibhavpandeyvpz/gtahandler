@@ -5,7 +5,9 @@ A visual editor for **handling.cfg** files from the classic GTA trilogy:
 - GTA:VC
 - GTA:SA
 
-![GTA Handler Screenshot](https://img.shields.io/badge/Platform-Windows-blue) ![.NET](https://img.shields.io/badge/.NET-8.0-purple) ![License](https://img.shields.io/badge/License-MIT-green)
+![Windows](https://img.shields.io/badge/Platform-Windows-blue) ![.NET](https://img.shields.io/badge/.NET-8.0-purple) ![License](https://img.shields.io/badge/License-MIT-green)
+
+![Screenshot](assets/screenshot.png)
 
 ## Features
 
