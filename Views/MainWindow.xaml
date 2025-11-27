@@ -1,0 +1,1227 @@
+<Window x:Class="GTAHandler.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:GTAHandler.ViewModels"
+        xmlns:local="clr-namespace:GTAHandler.Views"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        mc:Ignorable="d"
+        Title="{Binding WindowTitle}" 
+        Height="800" Width="1280"
+        MinHeight="600" MinWidth="1000"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="CanResizeWithGrip">
+    
+    <Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>
+    
+    <Window.InputBindings>
+        <KeyBinding Key="S" Modifiers="Ctrl" Command="{Binding SaveFileCommand}"/>
+        <KeyBinding Key="O" Modifiers="Ctrl" Command="{Binding BrowseFileCommand}"/>
+    </Window.InputBindings>
+    
+    <Border Background="{StaticResource PrimaryBrush}" 
+            BorderBrush="{StaticResource HoverBrush}" 
+            BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <!-- Custom Title Bar -->
+            <Border Grid.Row="0" Background="{StaticResource SecondaryBrush}"
+                    MouseLeftButtonDown="TitleBar_MouseLeftButtonDown"
+                    MouseMove="TitleBar_MouseMove">
+                <Grid Height="36">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <!-- App Title -->
+                    <TextBlock Grid.Column="0" Text="{Binding WindowTitle}" FontSize="12" 
+                               Foreground="{StaticResource TextDimBrush}" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                    
+                    <!-- Window Controls -->
+                    <StackPanel Grid.Column="2" Orientation="Horizontal">
+                        <!-- Minimize Button -->
+                        <Button x:Name="MinimizeButton" Click="MinimizeButton_Click" 
+                                Width="46" Height="36" ToolTip="Minimize">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Cursor" Value="Hand"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border x:Name="border" Background="{TemplateBinding Background}">
+                                                    <fa:ImageAwesome Icon="WindowMinimize" Width="12" Height="12" 
+                                                                     Foreground="{StaticResource TextDimBrush}"
+                                                                     VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="border" Property="Background" Value="{StaticResource HoverBrush}"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                        
+                        <!-- Maximize/Restore Button -->
+                        <Button x:Name="MaximizeButton" Click="MaximizeButton_Click" 
+                                Width="46" Height="36" ToolTip="Maximize">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Cursor" Value="Hand"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border x:Name="border" Background="{TemplateBinding Background}">
+                                                    <fa:ImageAwesome x:Name="MaximizeIcon" Icon="WindowMaximize" Width="12" Height="12" 
+                                                                     Foreground="{StaticResource TextDimBrush}"
+                                                                     VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="border" Property="Background" Value="{StaticResource HoverBrush}"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                        
+                        <!-- Close Button -->
+                        <Button x:Name="CloseButton" Click="CloseButton_Click" 
+                                Width="46" Height="36" ToolTip="Close">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Cursor" Value="Hand"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border x:Name="border" Background="{TemplateBinding Background}">
+                                                    <fa:ImageAwesome x:Name="CloseIcon" Icon="Times" Width="12" Height="12" 
+                                                                     Foreground="{StaticResource TextDimBrush}"
+                                                                     VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="border" Property="Background" Value="{StaticResource ErrorBrush}"/>
+                                                        <Setter TargetName="CloseIcon" Property="Foreground" Value="White"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            
+            <!-- Header / Toolbar -->
+            <Border Grid.Row="1" Background="{StaticResource SecondaryBrush}" 
+                    BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                <Grid Margin="16,12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <!-- Title -->
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                        <TextBlock Text="GTA Handler" FontSize="20" FontWeight="Bold" 
+                                   Foreground="{StaticResource AccentBrush}"/>
+                        <TextBlock Text="Edit handling.cfg from GTA:III, GTA:VC &amp; GTA:SA" FontSize="11" 
+                                   Foreground="{StaticResource TextDimBrush}"/>
+                    </StackPanel>
+                    
+                    <!-- Game Selection and File Operations -->
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                        <!-- Game Selection -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,16,0">
+                            <TextBlock Text="Game:" VerticalAlignment="Center" Margin="0,0,8,0" 
+                                       Foreground="{StaticResource TextDimBrush}"/>
+                            <ComboBox Width="160" 
+                                      ItemsSource="{Binding GameTypes}"
+                                      SelectedValue="{Binding SelectedGameType}"
+                                      SelectedValuePath="GameType"
+                                      DisplayMemberPath="DisplayName"/>
+                        </StackPanel>
+                        
+                        <!-- Buttons -->
+                        <Button Command="{Binding BrowseFileCommand}" 
+                                Margin="0,0,8,0" Style="{StaticResource SecondaryButton}">
+                            <StackPanel Orientation="Horizontal">
+                                <fa:ImageAwesome Icon="FolderOpen" Width="14" Height="14" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <TextBlock Text="Open" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Command="{Binding SaveFileCommand}" 
+                                Margin="0,0,8,0">
+                            <StackPanel Orientation="Horizontal">
+                                <fa:ImageAwesome Icon="Save" Width="14" Height="14" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <TextBlock Text="Save" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Command="{Binding SaveFileAsCommand}" 
+                                Style="{StaticResource SecondaryButton}"
+                                Margin="0,0,8,0">
+                            <StackPanel Orientation="Horizontal">
+                                <fa:ImageAwesome Icon="Save" Width="14" Height="14" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <TextBlock Text="Save As" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Command="{Binding ShowAboutCommand}" 
+                                Style="{StaticResource SecondaryButton}">
+                            <StackPanel Orientation="Horizontal">
+                                <fa:ImageAwesome Icon="InfoCircle" Width="14" Height="14" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <TextBlock Text="About" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        
+            <!-- Main Content -->
+            <Grid Grid.Row="2" Margin="16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="280" MinWidth="200"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <!-- Left Panel - Vehicle List -->
+            <Border Grid.Column="0" Background="{StaticResource SecondaryBrush}" 
+                     BorderBrush="{StaticResource BorderBrush}" 
+                    BorderThickness="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <!-- Vehicle List Header -->
+                    <Border Grid.Row="0" Background="{StaticResource SecondaryBrush}" 
+                            Padding="12,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Vehicles" FontWeight="SemiBold" FontSize="14"
+                                       Foreground="{StaticResource AccentBrush}"/>
+                            <TextBlock Grid.Column="1" 
+                                       Text="{Binding Vehicles.Count, StringFormat='({0})'}"
+                                       Foreground="{StaticResource TextDimBrush}"/>
+                        </Grid>
+                    </Border>
+                    
+                    <!-- Search Box -->
+                    <Border Grid.Row="1" Padding="8" 
+                            Visibility="{Binding IsFileLoaded, Converter={StaticResource BoolToVisibility}}">
+                        <Border Background="{StaticResource SecondaryBrush}"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="1"
+                                >
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="32"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                            <fa:ImageAwesome Grid.Column="0" 
+                                       Icon="Search" 
+                                       Width="14" Height="14"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"
+                                       Foreground="{StaticResource TextDimBrush}"/>
+                                <TextBox x:Name="SearchBox"
+                                         Grid.Column="1"
+                                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                         Background="Transparent"
+                                         BorderThickness="0"
+                                         Padding="0,8,8,8"
+                                         VerticalAlignment="Center"
+                                         ToolTip="Search vehicles..."/>
+                                <TextBlock Grid.Column="1"
+                                           Text="Search vehicles..." 
+                                           IsHitTestVisible="False"
+                                           VerticalAlignment="Center"
+                                           Foreground="{StaticResource TextDimBrush}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Grid>
+                        </Border>
+                    </Border>
+                    
+                    <!-- Grouped Vehicle List -->
+                    <ScrollViewer x:Name="VehicleListScrollViewer"
+                                  Grid.Row="2" 
+                                  VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled"
+                                  PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
+                                  Visibility="{Binding IsFileLoaded, Converter={StaticResource BoolToVisibility}}">
+                        <ItemsControl ItemsSource="{Binding GroupedVehicles}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Expander IsExpanded="True" Margin="0,0,0,4">
+                                        <Expander.Header>
+                                            <Grid HorizontalAlignment="Stretch">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding DisplayName}" 
+                                                           FontWeight="SemiBold"
+                                                           Foreground="{StaticResource TextBrush}"/>
+                                                <TextBlock Grid.Column="1" 
+                                                           Text="{Binding Count, StringFormat='({0})'}"
+                                                           Foreground="{StaticResource TextDimBrush}"
+                                                           Margin="8,0,8,0"/>
+                                            </Grid>
+                                        </Expander.Header>
+                                        <ListBox ItemsSource="{Binding Vehicles}"
+                                                 SelectedItem="{Binding DataContext.SelectedVehicle, 
+                                                    RelativeSource={RelativeSource AncestorType=Window}}"
+                                                 Background="Transparent"
+                                                 BorderThickness="0"
+                                                 Margin="16,0,0,0">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid Margin="0,2">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <Ellipse Grid.Column="0" Width="8" Height="8" 
+                                                                 Fill="{Binding IsModified, Converter={StaticResource ModifiedToBrush}}"
+                                                                 Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                                        <TextBlock Grid.Column="1" Text="{Binding Identifier}" 
+                                                                   FontFamily="{StaticResource MonoFont}"
+                                                                   VerticalAlignment="Center"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </Expander>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                    
+                    <!-- Empty State -->
+                    <TextBlock Grid.Row="2" 
+                               Text="No vehicles loaded.&#x0a;Select a game and open a file."
+                               HorizontalAlignment="Center" 
+                               VerticalAlignment="Center"
+                               TextAlignment="Center"
+                               Foreground="{StaticResource TextDimBrush}"
+                               Visibility="{Binding IsFileLoaded, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}"/>
+                </Grid>
+            </Border>
+            
+            <!-- Splitter -->
+            <GridSplitter Grid.Column="1" Width="4" Background="Transparent" 
+                          HorizontalAlignment="Center" VerticalAlignment="Stretch"
+                          Margin="8,0"/>
+            
+            <!-- Right Panel - Tabbed Editor -->
+            <Grid Grid.Column="2">
+                <!-- Tabs Bar -->
+                <Grid Visibility="{Binding ActiveTab, Converter={StaticResource NullToVisibility}}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <!-- Tab Strip -->
+                    <Border Grid.Row="0" Background="{StaticResource PrimaryBrush}">
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto" 
+                                      VerticalScrollBarVisibility="Disabled">
+                            <ItemsControl ItemsSource="{Binding OpenTabs}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border x:Name="TabBorder" 
+                                                Padding="14,10" 
+                                                Margin="0,0,1,0"
+                                                Cursor="Hand"
+                                                MouseLeftButtonDown="Tab_MouseLeftButtonDown">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="#1c1c1c"/>
+                                                    <Style.Triggers>
+                                                        <!-- Active tab: full background -->
+                                                        <DataTrigger Value="True">
+                                                            <DataTrigger.Binding>
+                                                                <MultiBinding Converter="{StaticResource EqualityConverter}">
+                                                                    <Binding/>
+                                                                    <Binding Path="DataContext.ActiveTab" RelativeSource="{RelativeSource AncestorType=Window}"/>
+                                                                </MultiBinding>
+                                                            </DataTrigger.Binding>
+                                                            <Setter Property="Background" Value="{StaticResource SecondaryBrush}"/>
+                                                        </DataTrigger>
+                                                        <!-- Hovered inactive tab -->
+                                                        <MultiTrigger>
+                                                            <MultiTrigger.Conditions>
+                                                                <Condition Property="IsMouseOver" Value="True"/>
+                                                            </MultiTrigger.Conditions>
+                                                            <MultiTrigger.Setters>
+                                                                <Setter Property="Background" Value="#1f1f1f"/>
+                                                            </MultiTrigger.Setters>
+                                                        </MultiTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Ellipse Grid.Column="0" Width="8" Height="8" 
+                                                         Fill="{Binding IsModified, Converter={StaticResource ModifiedToBrush}}"
+                                                         Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="1" 
+                                                           Text="{Binding Identifier}" 
+                                                           FontFamily="{StaticResource MonoFont}"
+                                                           FontSize="13"
+                                                           VerticalAlignment="Center">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Foreground" Value="#b0b0b0"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Value="True">
+                                                                    <DataTrigger.Binding>
+                                                                        <MultiBinding Converter="{StaticResource EqualityConverter}">
+                                                                            <Binding/>
+                                                                            <Binding Path="DataContext.ActiveTab" RelativeSource="{RelativeSource AncestorType=Window}"/>
+                                                                        </MultiBinding>
+                                                                    </DataTrigger.Binding>
+                                                                    <Setter Property="Foreground" Value="White"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                                <Button Grid.Column="2" 
+                                                        Content="✕" 
+                                                        FontSize="11"
+                                                        Margin="10,0,0,0"
+                                                        Padding="5,3"
+                                                        Click="CloseTab_Click"
+                                                        Tag="{Binding}">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button">
+                                                            <Setter Property="Background" Value="Transparent"/>
+                                                            <Setter Property="Foreground" Value="{StaticResource TextDimBrush}"/>
+                                                            <Setter Property="BorderThickness" Value="0"/>
+                                                            <Setter Property="Cursor" Value="Hand"/>
+                                                            <Setter Property="Template">
+                                                                <Setter.Value>
+                                                                    <ControlTemplate TargetType="Button">
+                                                                        <Border Background="{TemplateBinding Background}" 
+                                                                                
+                                                                                Padding="{TemplateBinding Padding}">
+                                                                            <ContentPresenter HorizontalAlignment="Center" 
+                                                                                              VerticalAlignment="Center"/>
+                                                                        </Border>
+                                                                        <ControlTemplate.Triggers>
+                                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                                <Setter Property="Background" Value="#e94560"/>
+                                                                                <Setter Property="Foreground" Value="White"/>
+                                                                            </Trigger>
+                                                                        </ControlTemplate.Triggers>
+                                                                    </ControlTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Style>
+                                                    </Button.Style>
+                                                </Button>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Border>
+                    
+                    <!-- Tab Content -->
+                    <Border Grid.Row="1" Background="{StaticResource SecondaryBrush}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            
+                            <!-- Action Buttons -->
+                            <Border Grid.Row="0" 
+                                    Background="{StaticResource SecondaryBrush}"
+                                    Padding="16,8">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                    <Button Command="{Binding CopyFromVehicleCommand}"
+                                            Style="{StaticResource SecondaryButton}"
+                                            Padding="12,6"
+                                            Margin="0,0,8,0"
+                                            ToolTip="Copy values from another vehicle in the same category">
+                                        <StackPanel Orientation="Horizontal">
+                                            <fa:ImageAwesome Icon="Copy" Width="12" Height="12" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                            <TextBlock Text="Copy From" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Command="{Binding ResetVehicleCommand}"
+                                            Style="{StaticResource SecondaryButton}"
+                                            Padding="12,6"
+                                            ToolTip="Reset to original values">
+                                        <StackPanel Orientation="Horizontal">
+                                            <fa:ImageAwesome Icon="Undo" Width="12" Height="12" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                            <TextBlock Text="Reset" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </Border>
+                    
+                            <!-- Property Editor Content -->
+                            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" 
+                                          HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Margin="16">
+                            
+                            <!-- Identity Section -->
+                            <GroupBox>
+                                <GroupBox.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <fa:ImageAwesome Icon="Tag" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <TextBlock Text="Identity" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </GroupBox.Header>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="180"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Vehicle ID" VerticalAlignment="Center"/>
+                                    <TextBox Grid.Column="1" 
+                                             Text="{Binding ActiveTab.Identifier, Mode=OneWay}"
+                                             IsReadOnly="True"
+                                             Foreground="{StaticResource TextDimBrush}"
+                                             ToolTip="Vehicle identifier (read-only)"/>
+                                </Grid>
+                            </GroupBox>
+                            
+                            <!-- Physics Section -->
+                            <GroupBox>
+                                <GroupBox.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <fa:ImageAwesome Icon="BalanceScale" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <TextBlock Text="Physics" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </GroupBox.Header>
+                                <StackPanel>
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="50"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Mass" VerticalAlignment="Center"/>
+                                        <TextBox Grid.Column="1" 
+                                                 Text="{Binding ActiveTab.Mass, UpdateSourceTrigger=PropertyChanged}"
+                                                 ToolTip="Vehicle mass [1.0 to 50000.0]"/>
+                                        <TextBlock Grid.Column="2" Text="kg" VerticalAlignment="Center" 
+                                                   Margin="8,0,0,0" Foreground="{StaticResource TextDimBrush}"/>
+                                    </Grid>
+                                    
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label VerticalAlignment="Center">
+                                            <Label.Style>
+                                                <Style TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
+                                                    <Setter Property="Content" Value="Turn Mass"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding SelectedGameType}" Value="GTA3">
+                                                            <Setter Property="Content" Value="Dimension X"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding SelectedGameType}" Value="GTAVC">
+                                                            <Setter Property="Content" Value="Dimension X"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Label.Style>
+                                        </Label>
+                                        <TextBox Grid.Column="1" 
+                                                 Text="{Binding ActiveTab.TurnMassOrDimensionX, UpdateSourceTrigger=PropertyChanged}"
+                                                 ToolTip="SA: Turn Mass, GTA3/VC: Vehicle width in meters"/>
+                                    </Grid>
+                                    
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label VerticalAlignment="Center">
+                                            <Label.Style>
+                                                <Style TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
+                                                    <Setter Property="Content" Value="Drag Multiplier"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding SelectedGameType}" Value="GTA3">
+                                                            <Setter Property="Content" Value="Dimension Y"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding SelectedGameType}" Value="GTAVC">
+                                                            <Setter Property="Content" Value="Dimension Y"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Label.Style>
+                                        </Label>
+                                        <TextBox Grid.Column="1" 
+                                                 Text="{Binding ActiveTab.DragMultOrDimensionY, UpdateSourceTrigger=PropertyChanged}"
+                                                 ToolTip="SA: Drag Multiplier, GTA3/VC: Vehicle length in meters"/>
+                                    </Grid>
+                                    
+                                    <!-- Dimension Z (GTA3/VC only) -->
+                                    <Grid Margin="0,0,0,8"
+                                          Visibility="{Binding SelectedGameType, Converter={StaticResource GameTypeVisibility}, ConverterParameter=NotGTASA}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="50"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Dimension Z" VerticalAlignment="Center"/>
+                                        <TextBox Grid.Column="1" 
+                                                 Text="{Binding ActiveTab.DimensionZ, UpdateSourceTrigger=PropertyChanged}"
+                                                 ToolTip="Vehicle height in meters"/>
+                                        <TextBlock Grid.Column="2" Text="m" VerticalAlignment="Center" 
+                                                   Margin="8,0,0,0" Foreground="{StaticResource TextDimBrush}"/>
+                                    </Grid>
+                                </StackPanel>
+                            </GroupBox>
+                            
+                            <!-- Centre of Mass Section -->
+                            <GroupBox>
+                                <GroupBox.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <fa:ImageAwesome Icon="Crosshairs" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <TextBlock Text="Centre of Mass" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </GroupBox.Header>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="180"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="50"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <Label Grid.Row="0" Content="X Offset" VerticalAlignment="Center"/>
+                                    <TextBox Grid.Row="0" Grid.Column="1" 
+                                             Text="{Binding ActiveTab.CentreOfMassX, UpdateSourceTrigger=PropertyChanged}"
+                                             ToolTip="Centre of mass X offset [-10.0 to 10.0]"/>
+                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="m" VerticalAlignment="Center" 
+                                               Margin="8,0,0,0" Foreground="{StaticResource TextDimBrush}"/>
+                                    
+                                    <Label Grid.Row="1" Content="Y Offset" VerticalAlignment="Center" Margin="0,8,0,0"/>
+                                    <TextBox Grid.Row="1" Grid.Column="1" Margin="0,8,0,0"
+                                             Text="{Binding ActiveTab.CentreOfMassY, UpdateSourceTrigger=PropertyChanged}"
+                                             ToolTip="Centre of mass Y offset [-10.0 to 10.0]"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="2" Text="m" VerticalAlignment="Center" 
+                                               Margin="8,8,0,0" Foreground="{StaticResource TextDimBrush}"/>
+                                    
+                                    <Label Grid.Row="2" Content="Z Offset" VerticalAlignment="Center" Margin="0,8,0,0"/>
+                                    <TextBox Grid.Row="2" Grid.Column="1" Margin="0,8,0,0"
+                                             Text="{Binding ActiveTab.CentreOfMassZ, UpdateSourceTrigger=PropertyChanged}"
+                                             ToolTip="Centre of mass Z offset [-10.0 to 10.0]"/>
+                                    <TextBlock Grid.Row="2" Grid.Column="2" Text="m" VerticalAlignment="Center" 
+                                               Margin="8,8,0,0" Foreground="{StaticResource TextDimBrush}"/>
+                                </Grid>
+                            </GroupBox>
+                            
+                            <!-- Buoyancy Section -->
+                            <GroupBox>
+                                <GroupBox.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <fa:ImageAwesome Icon="Tint" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <TextBlock Text="Buoyancy" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </GroupBox.Header>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="180"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="50"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Percent Submerged" VerticalAlignment="Center"/>
+                                    <TextBox Grid.Column="1" 
+                                             Text="{Binding ActiveTab.PercentSubmerged, UpdateSourceTrigger=PropertyChanged}"
+                                             ToolTip="Buoyancy percentage [10 to 120]. Values >100% cause vehicle to sink."/>
+                                    <TextBlock Grid.Column="2" Text="%" VerticalAlignment="Center" 
+                                               Margin="8,0,0,0" Foreground="{StaticResource TextDimBrush}"/>
+                                </Grid>
+                            </GroupBox>
+                            
+                            <!-- Traction Section -->
+                            <GroupBox>
+                                <GroupBox.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <fa:ImageAwesome Icon="Circle" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <TextBlock Text="Traction" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </GroupBox.Header>
+                                <StackPanel>
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="50"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Traction Multiplier" VerticalAlignment="Center"/>
+                                        <TextBox Grid.Column="1" 
+                                                 Text="{Binding ActiveTab.TractionMultiplier, UpdateSourceTrigger=PropertyChanged}"
+                                                 ToolTip="Grip level multiplier [0.5 to 2.0]"/>
+                                        <TextBlock Grid.Column="2" Text="×" VerticalAlignment="Center" 
+                                                   Margin="8,0,0,0" Foreground="{StaticResource TextDimBrush}"/>
+                                    </Grid>
+                                    
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Traction Loss" VerticalAlignment="Center"/>
+                                        <TextBox Grid.Column="1" 
+                                                 Text="{Binding ActiveTab.TractionLoss, UpdateSourceTrigger=PropertyChanged}"
+                                                 ToolTip="Grip loss when accelerating/braking [0.0 to 1.0]"/>
+                                    </Grid>
+                                    
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Traction Bias" VerticalAlignment="Center"/>
+                                        <TextBox Grid.Column="1" 
+                                                 Text="{Binding ActiveTab.TractionBias, UpdateSourceTrigger=PropertyChanged}"
+                                                 ToolTip="Grip distribution [0.0=rear, 1.0=front]"/>
+                                    </Grid>
+                                </StackPanel>
+                            </GroupBox>
+                            
+                            <!-- Transmission Section -->
+                            <GroupBox>
+                                <GroupBox.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <fa:ImageAwesome Icon="Cog" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <TextBlock Text="Transmission" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </GroupBox.Header>
+                                <StackPanel>
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Number of Gears" VerticalAlignment="Center"/>
+                                        <TextBox Grid.Column="1" 
+                                                 Text="{Binding ActiveTab.NumberOfGears, UpdateSourceTrigger=PropertyChanged}"
+                                                 ToolTip="Number of transmission gears [1 to 5]"/>
+                                    </Grid>
+                                    
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="50"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Max Velocity" VerticalAlignment="Center"/>
+                                        <TextBox Grid.Column="1" 
+                                                 Text="{Binding ActiveTab.MaxVelocity, UpdateSourceTrigger=PropertyChanged}"
+                                                 ToolTip="Maximum speed [5.0 to 300.0]"/>
+                                        <TextBlock Grid.Column="2" Text="km/h" VerticalAlignment="Center" 
+                                                   Margin="8,0,0,0" Foreground="{StaticResource TextDimBrush}"/>
+                                    </Grid>
+                                    
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="50"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Engine Acceleration" VerticalAlignment="Center"/>
+                                        <TextBox Grid.Column="1" 
+                                                 Text="{Binding ActiveTab.EngineAcceleration, UpdateSourceTrigger=PropertyChanged}"
+                                                 ToolTip="Acceleration rate [0.1 to 100.0]"/>
+                                        <TextBlock Grid.Column="2" Text="m/s²" VerticalAlignment="Center" 
+                                                   Margin="8,0,0,0" Foreground="{StaticResource TextDimBrush}"/>
+                                    </Grid>
+                                    
+                                    <!-- Engine Inertia (SA only) -->
+                                    <Grid Margin="0,0,0,8"
+                                          Visibility="{Binding SelectedGameType, Converter={StaticResource GameTypeVisibility}, ConverterParameter=SAOnly}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Engine Inertia" VerticalAlignment="Center"/>
+                                        <TextBox Grid.Column="1" 
+                                                 Text="{Binding ActiveTab.EngineInertia, UpdateSourceTrigger=PropertyChanged}"
+                                                 ToolTip="Engine response delay [0.0 to 150.0]"/>
+                                    </Grid>
+                                    
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Drive Type" VerticalAlignment="Center"/>
+                                        <ComboBox Grid.Column="1" 
+                                                  ItemsSource="{Binding DriveTypes}"
+                                                  SelectedValue="{Binding ActiveTab.DriveType}"
+                                                  SelectedValuePath="DriveType"
+                                                  DisplayMemberPath="DisplayName"
+                                                  ToolTip="Front, Rear, or 4-Wheel drive"/>
+                                    </Grid>
+                                    
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Engine Type" VerticalAlignment="Center"/>
+                                        <ComboBox Grid.Column="1" 
+                                                  ItemsSource="{Binding EngineTypes}"
+                                                  SelectedValue="{Binding ActiveTab.EngineType}"
+                                                  SelectedValuePath="EngineType"
+                                                  DisplayMemberPath="DisplayName"
+                                                  ToolTip="Petrol, Diesel, or Electric"/>
+                                    </Grid>
+                                </StackPanel>
+                            </GroupBox>
+                            
+                            <!-- Brakes Section -->
+                            <GroupBox>
+                                <GroupBox.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <fa:ImageAwesome Icon="Stop" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <TextBlock Text="Brakes" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </GroupBox.Header>
+                                <StackPanel>
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="50"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Brake Deceleration" VerticalAlignment="Center"/>
+                                        <TextBox Grid.Column="1" 
+                                                 Text="{Binding ActiveTab.BrakeDeceleration, UpdateSourceTrigger=PropertyChanged}"
+                                                 ToolTip="Braking power [0.1 to 50.0]"/>
+                                        <TextBlock Grid.Column="2" Text="m/s²" VerticalAlignment="Center" 
+                                                   Margin="8,0,0,0" Foreground="{StaticResource TextDimBrush}"/>
+                                    </Grid>
+                                    
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Brake Bias" VerticalAlignment="Center"/>
+                                        <TextBox Grid.Column="1" 
+                                                 Text="{Binding ActiveTab.BrakeBias, UpdateSourceTrigger=PropertyChanged}"
+                                                 ToolTip="Brake distribution [0.0=rear, 1.0=front]"/>
+                                    </Grid>
+                                    
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="ABS" VerticalAlignment="Center"/>
+                                        <CheckBox Grid.Column="1" IsChecked="{Binding ActiveTab.HasABS}"
+                                                  ToolTip="Anti-lock braking system" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </StackPanel>
+                            </GroupBox>
+                            
+                            <!-- Steering Section -->
+                            <GroupBox>
+                                <GroupBox.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <fa:ImageAwesome Icon="Gamepad" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <TextBlock Text="Steering" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </GroupBox.Header>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="180"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="50"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Steering Lock" VerticalAlignment="Center"/>
+                                    <TextBox Grid.Column="1" 
+                                             Text="{Binding ActiveTab.SteeringLock, UpdateSourceTrigger=PropertyChanged}"
+                                             ToolTip="Maximum steering angle [10.0 to 50.0]"/>
+                                    <TextBlock Grid.Column="2" Text="°" VerticalAlignment="Center" 
+                                               Margin="8,0,0,0" Foreground="{StaticResource TextDimBrush}"/>
+                                </Grid>
+                            </GroupBox>
+                            
+                            <!-- Suspension Section -->
+                            <GroupBox>
+                                <GroupBox.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <fa:ImageAwesome Icon="Wrench" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <TextBlock Text="Suspension" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </GroupBox.Header>
+                                <StackPanel>
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Force Level" VerticalAlignment="Center"/>
+                                        <TextBox Grid.Column="1" 
+                                                 Text="{Binding ActiveTab.SuspensionForceLevel, UpdateSourceTrigger=PropertyChanged}"
+                                                 ToolTip="Spring stiffness"/>
+                                    </Grid>
+                                    
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Damping Level" VerticalAlignment="Center"/>
+                                        <TextBox Grid.Column="1" 
+                                                 Text="{Binding ActiveTab.SuspensionDampingLevel, UpdateSourceTrigger=PropertyChanged}"
+                                                 ToolTip="Shock absorber strength"/>
+                                    </Grid>
+                                    
+                                    <!-- High Speed Compression (SA only) -->
+                                    <Grid Margin="0,0,0,8"
+                                          Visibility="{Binding SelectedGameType, Converter={StaticResource GameTypeVisibility}, ConverterParameter=SAOnly}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="High Speed Damping" VerticalAlignment="Center"/>
+                                        <TextBox Grid.Column="1" 
+                                                 Text="{Binding ActiveTab.SuspensionHighSpeedComDamp, UpdateSourceTrigger=PropertyChanged}"
+                                                 ToolTip="High speed compression damping"/>
+                                    </Grid>
+                                    
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="50"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Upper Limit" VerticalAlignment="Center"/>
+                                        <TextBox Grid.Column="1" 
+                                                 Text="{Binding ActiveTab.SuspensionUpperLimit, UpdateSourceTrigger=PropertyChanged}"
+                                                 ToolTip="Maximum suspension extension"/>
+                                        <TextBlock Grid.Column="2" Text="m" VerticalAlignment="Center" 
+                                                   Margin="8,0,0,0" Foreground="{StaticResource TextDimBrush}"/>
+                                    </Grid>
+                                    
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="50"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Lower Limit" VerticalAlignment="Center"/>
+                                        <TextBox Grid.Column="1" 
+                                                 Text="{Binding ActiveTab.SuspensionLowerLimit, UpdateSourceTrigger=PropertyChanged}"
+                                                 ToolTip="Maximum suspension compression"/>
+                                        <TextBlock Grid.Column="2" Text="m" VerticalAlignment="Center" 
+                                                   Margin="8,0,0,0" Foreground="{StaticResource TextDimBrush}"/>
+                                    </Grid>
+                                    
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Bias" VerticalAlignment="Center"/>
+                                        <TextBox Grid.Column="1" 
+                                                 Text="{Binding ActiveTab.SuspensionBias, UpdateSourceTrigger=PropertyChanged}"
+                                                 ToolTip="Front/rear suspension balance [0.0 to 1.0]"/>
+                                    </Grid>
+                                    
+                                    <!-- Anti-Dive Multiplier (VC and SA only) -->
+                                    <Grid Visibility="{Binding SelectedGameType, Converter={StaticResource GameTypeVisibility}, ConverterParameter=VCAndSA}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Anti-Dive Multiplier" VerticalAlignment="Center"/>
+                                        <TextBox Grid.Column="1" 
+                                                 Text="{Binding ActiveTab.SuspensionAntiDiveMultiplier, UpdateSourceTrigger=PropertyChanged}"
+                                                 ToolTip="Nose dive prevention under braking"/>
+                                    </Grid>
+                                </StackPanel>
+                            </GroupBox>
+                            
+                            <!-- Miscellaneous Section -->
+                            <GroupBox>
+                                <GroupBox.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <fa:ImageAwesome Icon="Cube" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <TextBlock Text="Miscellaneous" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </GroupBox.Header>
+                                <StackPanel>
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="50"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Seat Offset" VerticalAlignment="Center"/>
+                                        <TextBox Grid.Column="1" 
+                                                 Text="{Binding ActiveTab.SeatOffsetDistance, UpdateSourceTrigger=PropertyChanged}"
+                                                 ToolTip="Ped seat position offset towards centre"/>
+                                        <TextBlock Grid.Column="2" Text="m" VerticalAlignment="Center" 
+                                                   Margin="8,0,0,0" Foreground="{StaticResource TextDimBrush}"/>
+                                    </Grid>
+                                    
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="50"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Collision Damage Mult" VerticalAlignment="Center"/>
+                                        <TextBox Grid.Column="1" 
+                                                 Text="{Binding ActiveTab.CollisionDamageMultiplier, UpdateSourceTrigger=PropertyChanged}"
+                                                 ToolTip="Damage taken from collisions [0.0 to 5.0]"/>
+                                        <TextBlock Grid.Column="2" Text="×" VerticalAlignment="Center" 
+                                                   Margin="8,0,0,0" Foreground="{StaticResource TextDimBrush}"/>
+                                    </Grid>
+                                    
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="50"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Monetary Value" VerticalAlignment="Center"/>
+                                        <TextBox Grid.Column="1" 
+                                                 Text="{Binding ActiveTab.MonetaryValue, UpdateSourceTrigger=PropertyChanged}"
+                                                 ToolTip="Vehicle value [1 to 1000000]"/>
+                                        <TextBlock Grid.Column="2" Text="$" VerticalAlignment="Center" 
+                                                   Margin="8,0,0,0" Foreground="{StaticResource TextDimBrush}"/>
+                                    </Grid>
+                                </StackPanel>
+                            </GroupBox>
+                            
+                            <!-- Flags Section -->
+                            <GroupBox>
+                                <GroupBox.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <fa:ImageAwesome Icon="Flag" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <TextBlock Text="Flags" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </GroupBox.Header>
+                                <StackPanel>
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Model Flags" VerticalAlignment="Center"/>
+                                        <TextBox Grid.Column="1" 
+                                                 Text="{Binding ActiveTab.ModelFlags, UpdateSourceTrigger=PropertyChanged}"
+                                                 FontFamily="{StaticResource MonoFont}"
+                                                 ToolTip="Vehicle model flags (hexadecimal)"/>
+                                    </Grid>
+                                    
+                                    <!-- Handling Flags (SA only) -->
+                                    <Grid Visibility="{Binding SelectedGameType, Converter={StaticResource GameTypeVisibility}, ConverterParameter=SAOnly}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Handling Flags" VerticalAlignment="Center"/>
+                                        <TextBox Grid.Column="1" 
+                                                 Text="{Binding ActiveTab.HandlingFlags, UpdateSourceTrigger=PropertyChanged}"
+                                                 FontFamily="{StaticResource MonoFont}"
+                                                 ToolTip="Handling flags (hexadecimal)"/>
+                                    </Grid>
+                                </StackPanel>
+                            </GroupBox>
+                            
+                            <!-- Lights Section -->
+                            <GroupBox>
+                                <GroupBox.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <fa:ImageAwesome Icon="LightbulbOutline" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <TextBlock Text="Lights" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </GroupBox.Header>
+                                <StackPanel>
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Front Lights" VerticalAlignment="Center"/>
+                                        <ComboBox Grid.Column="1" 
+                                                  ItemsSource="{Binding LightTypes}"
+                                                  SelectedValue="{Binding ActiveTab.FrontLights}"
+                                                  SelectedValuePath="LightType"
+                                                  DisplayMemberPath="DisplayName"
+                                                  ToolTip="Front light style"/>
+                                    </Grid>
+                                    
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Rear Lights" VerticalAlignment="Center"/>
+                                        <ComboBox Grid.Column="1" 
+                                                  ItemsSource="{Binding LightTypes}"
+                                                  SelectedValue="{Binding ActiveTab.RearLights}"
+                                                  SelectedValuePath="LightType"
+                                                  DisplayMemberPath="DisplayName"
+                                                  ToolTip="Rear light style"/>
+                                    </Grid>
+                                </StackPanel>
+                            </GroupBox>
+                            
+                            <!-- Animation Group (SA only) -->
+                            <GroupBox Visibility="{Binding SelectedGameType, Converter={StaticResource GameTypeVisibility}, ConverterParameter=SAOnly}">
+                                <GroupBox.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <fa:ImageAwesome Icon="Film" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <TextBlock Text="Animation" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </GroupBox.Header>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="180"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Animation Group" VerticalAlignment="Center"/>
+                                    <TextBox Grid.Column="1" 
+                                             Text="{Binding ActiveTab.AnimGroup, UpdateSourceTrigger=PropertyChanged}"
+                                             ToolTip="Vehicle animation group [0-30]"/>
+                                </Grid>
+                            </GroupBox>
+                            
+                        </StackPanel>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+                </Grid>
+                
+                <!-- Empty State for Editor (when no tabs open) -->
+                <Border Background="{StaticResource SecondaryBrush}" 
+                        
+                        Visibility="{Binding ActiveTab, Converter={StaticResource NullToVisibility}, ConverterParameter=Invert}">
+                    <StackPanel HorizontalAlignment="Center" 
+                                VerticalAlignment="Center">
+                        <fa:ImageAwesome Icon="Car" Width="56" Height="56" Foreground="{StaticResource TextDimBrush}" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+                        <TextBlock Text="Select a vehicle to edit"
+                                   FontSize="18"
+                                   FontWeight="SemiBold"
+                                   HorizontalAlignment="Center"
+                                   Foreground="{StaticResource TextBrush}"/>
+                        <TextBlock Text="Click a vehicle from the list on the left to open it"
+                                   FontSize="13"
+                                   HorizontalAlignment="Center"
+                                   Foreground="{StaticResource TextDimBrush}"
+                                   Margin="0,8,0,0"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+        
+            <!-- Status Bar -->
+            <Border Grid.Row="3" Background="{StaticResource SecondaryBrush}" 
+                    BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0">
+            <Grid Margin="16,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock Grid.Column="0" Text="{Binding StatusMessage}" 
+                           VerticalAlignment="Center"
+                           Foreground="{StaticResource TextDimBrush}"/>
+                
+                <TextBlock Grid.Column="1" 
+                           Text="{Binding SelectedGameType, Converter={StaticResource GameTypeToDisplayName}}" 
+                           FontWeight="SemiBold" 
+                           Foreground="{Binding SelectedGameType, Converter={StaticResource GameTypeToColor}}"
+                           VerticalAlignment="Center"
+                           Margin="8,0"/>
+                
+                <TextBlock Grid.Column="2" 
+                           Foreground="{StaticResource WarningBrush}"
+                           FontWeight="SemiBold"
+                           VerticalAlignment="Center">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Text" Value=""/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HasUnsavedChanges}" Value="True">
+                                    <Setter Property="Text" Value="● Unsaved Changes"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</Window>
+
+

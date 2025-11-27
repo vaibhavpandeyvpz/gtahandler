@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>GTAHandler</AssemblyName>
+    <RootNamespace>GTAHandler</RootNamespace>
+    <Version>1.0.0</Version>
+    <Authors>Vaibhav Pandey (VPZ)</Authors>
+    <Description>Visual editor for GTA III, Vice City, and San Andreas handling.cfg files</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="gta3.png" />
+    <Resource Include="gtavc.png" />
+    <Resource Include="gtasa.png" />
+  </ItemGroup>
+
+</Project>
+

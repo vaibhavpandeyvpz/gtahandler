@@ -1,0 +1,231 @@
+<Window x:Class="GTAHandler.Views.CopyFromDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        Title="Copy Values"
+        Width="450" Height="580"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ShowInTaskbar="False">
+    
+    <Border Background="{StaticResource PrimaryBrush}" 
+            BorderBrush="{StaticResource HoverBrush}" 
+            BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <!-- Title Bar -->
+            <Border Grid.Row="0" 
+                    Background="{StaticResource SecondaryBrush}" 
+                    MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                <Grid Margin="16,12">
+                    <StackPanel Orientation="Horizontal">
+                        <fa:ImageAwesome Icon="Copy" Width="16" Height="16" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <TextBlock Text="Copy Values" 
+                                   FontWeight="SemiBold" 
+                                   FontSize="14"
+                                   VerticalAlignment="Center"
+                                   Foreground="{StaticResource TextBrush}"/>
+                    </StackPanel>
+                    <Button HorizontalAlignment="Right"
+                            Click="CloseButton_Click"
+                            Width="24" Height="24"
+                            Padding="0">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="border" Background="{TemplateBinding Background}">
+                                                <fa:ImageAwesome x:Name="icon" Icon="Times" Width="10" Height="10" 
+                                                                 Foreground="{StaticResource TextDimBrush}"
+                                                                 HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="border" Property="Background" Value="{StaticResource ErrorBrush}"/>
+                                                    <Setter TargetName="icon" Property="Foreground" Value="White"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Grid>
+            </Border>
+            
+            <!-- Paste Raw Config Section -->
+            <Border Grid.Row="1" Padding="16,12" Background="{StaticResource SecondaryBrush}"
+                    BorderBrush="{StaticResource HoverBrush}" BorderThickness="0,0,0,1">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                        <fa:ImageAwesome Icon="Paste" Width="12" Height="12" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBlock Text="Paste from config line" 
+                                   FontWeight="SemiBold" 
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextBrush}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <TextBox x:Name="RawConfigBox"
+                             Height="54"
+                             Background="{StaticResource PrimaryBrush}"
+                             BorderBrush="{StaticResource HoverBrush}"
+                             BorderThickness="1"
+                             Padding="8,6"
+                             FontFamily="{StaticResource MonoFont}"
+                             FontSize="11"
+                             TextWrapping="Wrap"
+                             AcceptsReturn="False"
+                             VerticalScrollBarVisibility="Auto"
+                             TextChanged="RawConfigBox_TextChanged"/>
+                    <TextBlock x:Name="RawConfigPlaceholder"
+                               Text="Paste a handling.cfg line here (e.g., from a mod's readme)..." 
+                               IsHitTestVisible="False"
+                               Margin="9,0,0,0"
+                               FontSize="11"
+                               Foreground="{StaticResource TextDimBrush}"
+                               VerticalAlignment="Top"/>
+                    <TextBlock x:Name="ParseStatusText"
+                               FontSize="11"
+                               Margin="0,6,0,0"
+                               Visibility="Collapsed"/>
+                </StackPanel>
+            </Border>
+            
+            <!-- Or Separator -->
+            <Border Grid.Row="2" Padding="16,8" Background="{StaticResource PrimaryBrush}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Height="1" Background="{StaticResource HoverBrush}" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="1" Text="OR select a vehicle" 
+                               Foreground="{StaticResource TextDimBrush}" 
+                               FontSize="11" 
+                               Margin="12,0"/>
+                    <Border Grid.Column="2" Height="1" Background="{StaticResource HoverBrush}" VerticalAlignment="Center"/>
+                </Grid>
+            </Border>
+            
+            <!-- Vehicle Selection Section -->
+            <Grid Grid.Row="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                
+                <!-- Category Info & Search -->
+                <Border Grid.Row="0" Padding="16,8" Background="{StaticResource SecondaryBrush}">
+                    <StackPanel>
+                        <TextBlock x:Name="CategoryText"
+                                   Foreground="{StaticResource TextDimBrush}"
+                                   FontSize="12"
+                                   Margin="0,0,0,8"/>
+                        <!-- Search Box -->
+                        <Border Background="{StaticResource PrimaryBrush}"
+                                BorderBrush="{StaticResource HoverBrush}"
+                                BorderThickness="1">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="32"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <fa:ImageAwesome Grid.Column="0" 
+                                           Icon="Search" 
+                                           Width="14" Height="14"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center"
+                                           Foreground="{StaticResource TextDimBrush}"/>
+                                <TextBox x:Name="SearchBox"
+                                         Grid.Column="1"
+                                         Background="Transparent"
+                                         BorderThickness="0"
+                                         Padding="0,8,8,8"
+                                         VerticalAlignment="Center"
+                                         TextChanged="SearchBox_TextChanged"/>
+                                <TextBlock x:Name="SearchPlaceholder"
+                                           Grid.Column="1"
+                                           Text="Search vehicles..." 
+                                           IsHitTestVisible="False"
+                                           VerticalAlignment="Center"
+                                           Foreground="{StaticResource TextDimBrush}"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </Border>
+                
+                <!-- Vehicle List -->
+                <ListBox Grid.Row="1" 
+                         x:Name="VehicleList"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         Margin="8"
+                         SelectionMode="Single"
+                         MouseDoubleClick="VehicleList_MouseDoubleClick">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="4,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding Identifier}" 
+                                           FontFamily="{StaticResource MonoFont}"
+                                           FontSize="13"
+                                           VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" 
+                                           Text="{Binding MaxVelocity, StringFormat='{}{0:F0} km/h'}"
+                                           Foreground="{StaticResource TextDimBrush}"
+                                           FontSize="11"
+                                           VerticalAlignment="Center"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+            
+            <!-- Buttons -->
+            <Border Grid.Row="4" 
+                    Background="{StaticResource SecondaryBrush}" 
+                    Padding="16,12">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Click="CancelButton_Click"
+                            MinWidth="80"
+                            Margin="0,0,8,0"
+                            Style="{StaticResource SecondaryButton}">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:ImageAwesome Icon="Times" Width="10" Height="10" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="Cancel" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Click="CopyButton_Click"
+                            MinWidth="100"
+                            x:Name="CopyButton"
+                            IsEnabled="False">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:ImageAwesome Icon="Check" Width="10" Height="10" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="Apply Values" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Border>
+</Window>
+
