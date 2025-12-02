@@ -261,7 +261,7 @@ public class HandlingParser
 
     private void ParseGTAVCLine(string[] parts, VehicleHandling v)
     {
-        // GTAVC: 32 fields (added suspension anti-dive multiplier)
+        // GTAVC: 33 fields (added suspension anti-dive multiplier)
         // A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag
         int i = 0;
         v.Identifier = parts[i++];                          // A

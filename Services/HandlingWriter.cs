@@ -103,7 +103,7 @@ public class HandlingWriter
 
     private string GenerateGTAVCLine(VehicleHandling v)
     {
-        // GTAVC: 32 fields
+        // GTAVC: 33 fields
         var parts = new List<string>
         {
             v.Identifier.PadRight(14),
