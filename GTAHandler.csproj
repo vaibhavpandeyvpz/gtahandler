@@ -8,7 +8,7 @@
     <UseWPF>true</UseWPF>
     <AssemblyName>GTAHandler</AssemblyName>
     <RootNamespace>GTAHandler</RootNamespace>
-    <Version>1.0.0</Version>
+    <Version>1.1.0</Version>
     <Authors>Vaibhav Pandey (VPZ)</Authors>
     <Description>Visual editor for GTA III, Vice City, and San Andreas handling.cfg files</Description>
     <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
