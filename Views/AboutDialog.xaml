@@ -1,9 +1,9 @@
 <Window x:Class="GTAHandler.Views.AboutDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
         Title="About"
-        Width="420" Height="480"
+        Width="420" Height="580"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         WindowStyle="None"
@@ -41,7 +41,7 @@
                                     <Setter.Value>
                                         <ControlTemplate TargetType="Button">
                                             <Border x:Name="border" Background="{TemplateBinding Background}">
-                                                <fa:ImageAwesome x:Name="icon" Icon="Times" Width="10" Height="10" 
+                                                <fa:IconImage x:Name="icon" Icon="Times" Width="10" Height="10" 
                                                                  Foreground="{StaticResource TextDimBrush}"
                                                                  HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
@@ -74,18 +74,28 @@
                                HorizontalAlignment="Center"
                                Margin="0,4,0,20"/>
                     
-                    <!-- Game Logos -->
+                    <!-- Game Logos - Original Games -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,12">
+                        <Image Source="/Resources/gta3.png" Width="60" Height="60" Margin="8,0" 
+                               RenderOptions.BitmapScalingMode="HighQuality"/>
+                        <Image Source="/Resources/gtavc.png" Width="60" Height="60" Margin="8,0"
+                               RenderOptions.BitmapScalingMode="HighQuality"/>
+                        <Image Source="/Resources/gtasa.png" Width="60" Height="60" Margin="8,0"
+                               RenderOptions.BitmapScalingMode="HighQuality"/>
+                    </StackPanel>
+                    
+                    <!-- Game Logos - Definitive Edition -->
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
-                        <Image Source="/gta3.png" Width="60" Height="60" Margin="8,0" 
+                        <Image Source="/Resources/gta3de.png" Width="60" Height="60" Margin="8,0" 
                                RenderOptions.BitmapScalingMode="HighQuality"/>
-                        <Image Source="/gtavc.png" Width="60" Height="60" Margin="8,0"
+                        <Image Source="/Resources/gtavcde.png" Width="60" Height="60" Margin="8,0"
                                RenderOptions.BitmapScalingMode="HighQuality"/>
-                        <Image Source="/gtasa.png" Width="60" Height="60" Margin="8,0"
+                        <Image Source="/Resources/gtasade.png" Width="60" Height="60" Margin="8,0"
                                RenderOptions.BitmapScalingMode="HighQuality"/>
                     </StackPanel>
                     
                     <!-- Description -->
-                    <TextBlock Text="A visual editor for viewing and editing handling.cfg files from GTA III, GTA Vice City and GTA San Andreas."
+                    <TextBlock Text="A visual editor for viewing and editing handling.cfg files from GTA III, GTA Vice City, GTA San Andreas, and their Definitive Edition versions."
                                TextWrapping="Wrap"
                                TextAlignment="Center"
                                FontSize="12"
@@ -129,7 +139,7 @@
                         MinWidth="100"
                         HorizontalAlignment="Center">
                     <StackPanel Orientation="Horizontal">
-                        <fa:ImageAwesome Icon="Times" Width="10" Height="10" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <fa:IconImage Icon="Times" Width="10" Height="10" VerticalAlignment="Center" Margin="0,0,6,0"/>
                         <TextBlock Text="Close" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>

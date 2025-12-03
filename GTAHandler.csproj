@@ -11,19 +11,31 @@
     <Version>1.0.0</Version>
     <Authors>Vaibhav Pandey (VPZ)</Authors>
     <Description>Visual editor for GTA III, Vice City, and San Andreas handling.cfg files</Description>
-    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-    <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
+    <PackageReference Include="FontAwesome.Sharp" Version="6.6.0" />
+    <PackageReference Include="Unpaker" Version="1.1.0" />
+    <PackageReference Include="Oodle.NET" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="gta3.png" />
-    <Resource Include="gtavc.png" />
-    <Resource Include="gtasa.png" />
-    <Resource Include="icon.ico" />
+    <Resource Include="Resources\gta3.png" />
+    <Resource Include="Resources\gtavc.png" />
+    <Resource Include="Resources\gtasa.png" />
+    <Resource Include="Resources\gta3de.png" />
+    <Resource Include="Resources\gtavcde.png" />
+    <Resource Include="Resources\gtasade.png" />
+    <Resource Include="Resources\icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Third-Party\oo2core_9_win64.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Link>oo2core_9_win64.dll</Link>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -9,11 +9,11 @@ public enum GameType
 
 public static class GameTypeExtensions
 {
-    public static string GetDisplayName(this GameType gameType) => gameType switch
+    public static string GetDisplayName(this GameType gameType, bool isDefinitiveEdition = false) => gameType switch
     {
-        GameType.GTA3 => "GTA:III",
-        GameType.GTAVC => "GTA:VC",
-        GameType.GTASA => "GTA:SA",
+        GameType.GTA3 => isDefinitiveEdition ? "GTA:III DE" : "GTA:III",
+        GameType.GTAVC => isDefinitiveEdition ? "GTA:VC DE" : "GTA:VC",
+        GameType.GTASA => isDefinitiveEdition ? "GTA:SA DE" : "GTA:SA",
         _ => gameType.ToString()
     };
 

@@ -10,6 +10,7 @@ using GTAHandler.Models;
 using GTAHandler.Services;
 using GTAHandler.Views;
 using Microsoft.Win32;
+using Unpaker;
 
 namespace GTAHandler.ViewModels;
 
@@ -20,6 +21,7 @@ public partial class MainViewModel : ObservableObject
 
     private List<string> _originalLines = new();
     private string _currentFilePath = string.Empty;
+    private PakFileInfo? _pakFileInfo;
 
     [ObservableProperty]
     private GameType _selectedGameType = GameType.GTA3;
@@ -55,6 +57,8 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     private string _windowTitle = "GTA Handler by VPZ";
+
+    public string GameDisplayName => SelectedGameType.GetDisplayName(_pakFileInfo != null);
 
     [ObservableProperty]
     private ObservableCollection<FieldDefinition> _currentFields = new();
@@ -111,6 +115,7 @@ public partial class MainViewModel : ObservableObject
         }
 
         ClearData();
+        OnPropertyChanged(nameof(GameDisplayName));
     }
 
     partial void OnSelectedVehicleChanged(VehicleHandling? value)
@@ -305,8 +310,8 @@ public partial class MainViewModel : ObservableObject
     {
         var dialog = new OpenFileDialog
         {
-            Filter = "Config Files (*.cfg)|*.cfg|All Files (*.*)|*.*",
-            Title = $"Select handling.cfg for {SelectedGameType.GetDisplayName()}"
+            Filter = "Config Files (*.cfg)|*.cfg|Pak Files (*.pak)|*.pak|All Files (*.*)|*.*",
+            Title = $"Select handling.cfg or .pak file for {SelectedGameType.GetDisplayName()}"
         };
 
         if (dialog.ShowDialog() == true)
@@ -320,10 +325,19 @@ public partial class MainViewModel : ObservableObject
     {
         try
         {
-            var (vehicles, rawLines) = _parser.ParseFile(filePath, SelectedGameType);
+            string actualFilePath = filePath;
+            _pakFileInfo = null;
+
+            // Check if it's a .pak file
+            if (Path.GetExtension(filePath).Equals(".pak", StringComparison.OrdinalIgnoreCase))
+            {
+                actualFilePath = ExtractHandlingCfgFromPak(filePath);
+            }
+
+            var (vehicles, rawLines) = _parser.ParseFile(actualFilePath, SelectedGameType);
 
             _originalLines = rawLines;
-            _currentFilePath = filePath;
+            _currentFilePath = actualFilePath;
 
             Vehicles.Clear();
             foreach (var vehicle in vehicles.OrderBy(v => v.Identifier))
@@ -349,8 +363,16 @@ public partial class MainViewModel : ObservableObject
 
             IsFileLoaded = true;
             HasUnsavedChanges = false;
-            StatusMessage = $"Loaded {vehicles.Count} vehicles from {Path.GetFileName(filePath)}";
-            WindowTitle = $"GTA Handler by VPZ - {Path.GetFileName(filePath)} [{SelectedGameType.GetDisplayName()}]";
+            bool isFromPak = _pakFileInfo != null;
+            string displayName = isFromPak
+                ? $"{Path.GetFileName(_pakFileInfo.OriginalPakPath)} (pak)"
+                : Path.GetFileName(filePath);
+            string gameDisplayName = SelectedGameType.GetDisplayName(isFromPak);
+            StatusMessage = $"Loaded {vehicles.Count} vehicles from {displayName}";
+            WindowTitle = $"GTA Handler by VPZ - {displayName} [{gameDisplayName}]";
+
+            // Notify that GameDisplayName has changed
+            OnPropertyChanged(nameof(GameDisplayName));
 
             // Select first vehicle in first category
             if (GroupedVehicles.Any() && GroupedVehicles.First().Vehicles.Any())
@@ -380,6 +402,21 @@ public partial class MainViewModel : ObservableObject
             CustomDialog.ShowError(message, title);
             StatusMessage = $"Failed to load: {ex.ErrorType}";
         }
+        catch (Unpaker.DecompressionFailedException ex)
+        {
+            string errorMessage = $"Oodle decompression failed while reading pak file.\n\n{ex.Message}";
+            errorMessage += "\n\nThis usually means:";
+            errorMessage += "\n1. The Oodle.NET package is not properly installed";
+            errorMessage += "\n2. The oo2core_9_win64.dll is missing or incompatible";
+            errorMessage += "\n3. The pak file uses an unsupported Oodle version";
+            errorMessage += "\n\nPlease ensure:";
+            errorMessage += "\n- Oodle.NET package is installed (should be automatic)";
+            errorMessage += "\n- oo2core_9_win64.dll is in the application directory";
+            errorMessage += "\n- You're using a compatible version of the DLL";
+
+            CustomDialog.ShowError(errorMessage, "Oodle Decompression Failed");
+            StatusMessage = "Oodle decompression failed";
+        }
         catch (Exception ex)
         {
             CustomDialog.ShowError($"Unexpected error loading file:\n\n{ex.Message}", "Error");
@@ -387,10 +424,74 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
+    private string ExtractHandlingCfgFromPak(string pakPath)
+    {
+        using var pakStream = File.OpenRead(pakPath);
+        var builder = new PakBuilder();
+        var reader = builder.Reader(pakStream);
+
+        // Find handling.cfg in the pak
+        string handlingCfgPath = reader.Files
+            .FirstOrDefault(f => f.EndsWith("handling.cfg", StringComparison.OrdinalIgnoreCase))
+            ?? throw new FileNotFoundException("handling.cfg not found in pak file");
+
+        // Extract to temp file
+        string tempPath = Path.Combine(Path.GetTempPath(), $"gtahandler_{Guid.NewGuid()}.cfg");
+        using (var tempStream = File.Create(tempPath))
+        {
+            pakStream.Seek(0, SeekOrigin.Begin);
+            reader.ReadFile(handlingCfgPath, pakStream, tempStream);
+        }
+
+        // Get compression methods - we need to preserve all compression methods from the original pak
+        // The pak file structure requires all compression methods to be available
+        var compressionMethods = new List<Compression>();
+
+        // Try to get compression from handling.cfg entry
+        var entryInfo = reader.GetEntryInfo(handlingCfgPath);
+        if (entryInfo != null && entryInfo.Compression.HasValue)
+        {
+            compressionMethods.Add(entryInfo.Compression!.Value);
+        }
+
+        // Also add common compression methods that pak files typically support
+        // This ensures compatibility with the pak file format
+        if (!compressionMethods.Contains(Compression.Zlib))
+        {
+            compressionMethods.Add(Compression.Zlib);
+        }
+        if (!compressionMethods.Contains(Compression.Gzip))
+        {
+            compressionMethods.Add(Compression.Gzip);
+        }
+
+        // Store pak metadata including all file paths for later preservation
+        _pakFileInfo = new PakFileInfo
+        {
+            OriginalPakPath = pakPath,
+            HandlingCfgPathInPak = handlingCfgPath,
+            TempExtractedPath = tempPath,
+            Version = reader.Version,
+            MountPoint = reader.MountPoint,
+            PathHashSeed = reader.PathHashSeed,
+            CompressionMethods = compressionMethods,
+            AesKey = null // GTA Trilogy paks are not encrypted
+        };
+
+        return tempPath;
+    }
+
     [RelayCommand(CanExecute = nameof(CanSave))]
     private void SaveFile()
     {
         if (string.IsNullOrEmpty(_currentFilePath))
+        {
+            SaveFileAs();
+            return;
+        }
+
+        // If originally from pak and current path is still the temp file, offer to save as pak
+        if (_pakFileInfo != null && _currentFilePath == _pakFileInfo.TempExtractedPath)
         {
             SaveFileAs();
             return;
@@ -418,18 +519,116 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(CanSave))]
     private void SaveFileAs()
     {
-        var dialog = new SaveFileDialog
+        SaveFileDialog dialog;
+
+        // If originally from pak, offer both options
+        if (_pakFileInfo != null)
         {
-            Filter = "Config Files (*.cfg)|*.cfg|All Files (*.*)|*.*",
-            Title = "Save handling.cfg",
-            FileName = "handling.cfg"
-        };
+            dialog = new SaveFileDialog
+            {
+                Filter = "Pak Files (*.pak)|*.pak|Config Files (*.cfg)|*.cfg|All Files (*.*)|*.*",
+                Title = "Save handling.cfg",
+                FileName = Path.GetFileName(_pakFileInfo.OriginalPakPath)
+            };
+        }
+        else
+        {
+            dialog = new SaveFileDialog
+            {
+                Filter = "Config Files (*.cfg)|*.cfg|All Files (*.*)|*.*",
+                Title = "Save handling.cfg",
+                FileName = "handling.cfg"
+            };
+        }
 
         if (dialog.ShowDialog() == true)
         {
-            _currentFilePath = dialog.FileName;
-            SaveFile();
-            WindowTitle = $"GTA Handler by VPZ - {Path.GetFileName(_currentFilePath)} [{SelectedGameType.GetDisplayName()}]";
+            string extension = Path.GetExtension(dialog.FileName).ToLowerInvariant();
+
+            if (extension == ".pak" && _pakFileInfo != null)
+            {
+                SaveToPak(dialog.FileName);
+            }
+            else
+            {
+                _currentFilePath = dialog.FileName;
+                SaveFile();
+                bool isFromPak = _pakFileInfo != null;
+                WindowTitle = $"GTA Handler by VPZ - {Path.GetFileName(_currentFilePath)} [{SelectedGameType.GetDisplayName(isFromPak)}]";
+                OnPropertyChanged(nameof(GameDisplayName));
+            }
+        }
+    }
+
+    private void SaveToPak(string pakPath)
+    {
+        if (_pakFileInfo == null)
+        {
+            throw new InvalidOperationException("Cannot save to pak: no pak file info available");
+        }
+
+        try
+        {
+            // First, save the handling.cfg to a temp file
+            string tempCfgPath = Path.Combine(Path.GetTempPath(), $"gtahandler_save_{Guid.NewGuid()}.cfg");
+            _writer.SaveFile(tempCfgPath, Vehicles.ToList(), _originalLines, SelectedGameType);
+
+            // Read the saved handling.cfg
+            byte[] handlingCfgData = File.ReadAllBytes(tempCfgPath);
+
+            // Create new pak file
+            using var newPakStream = File.Create(pakPath);
+            var builder = new PakBuilder();
+
+            // Don't set compression - we'll write uncompressed
+            var writer = builder.Writer(
+                newPakStream,
+                _pakFileInfo.Version,
+                _pakFileInfo.MountPoint,
+                _pakFileInfo.PathHashSeed);
+
+            // Write handling.cfg to pak at the same path without compression
+            writer.WriteFile(_pakFileInfo.HandlingCfgPathInPak, false, handlingCfgData);
+
+            // Write index and finish
+            writer.WriteIndex();
+
+            // Clean up temp file
+            try
+            {
+                File.Delete(tempCfgPath);
+            }
+            catch { }
+
+            // Close original pak stream if still open
+            if (_pakFileInfo.OriginalPakStream != null)
+            {
+                try
+                {
+                    _pakFileInfo.OriginalPakStream.Dispose();
+                }
+                catch { }
+                _pakFileInfo.OriginalPakStream = null;
+            }
+
+            // Update pak file info
+            _pakFileInfo.OriginalPakPath = pakPath;
+            _currentFilePath = pakPath;
+
+            // Reset modification flags
+            foreach (var vehicle in Vehicles)
+            {
+                vehicle.IsModified = false;
+            }
+            HasUnsavedChanges = false;
+
+            StatusMessage = $"Saved to {Path.GetFileName(pakPath)}";
+            WindowTitle = $"GTA Handler by VPZ - {Path.GetFileName(pakPath)} [{SelectedGameType.GetDisplayName(true)}]";
+            OnPropertyChanged(nameof(GameDisplayName));
+        }
+        catch (Exception ex)
+        {
+            CustomDialog.ShowError($"Error saving pak file: {ex.Message}", "Error");
         }
     }
 
@@ -486,10 +685,36 @@ public partial class MainViewModel : ObservableObject
         SearchText = string.Empty;
         _originalLines.Clear();
         _currentFilePath = string.Empty;
+
+        // Clean up temp file if it exists
+        if (_pakFileInfo != null)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(_pakFileInfo.TempExtractedPath) && File.Exists(_pakFileInfo.TempExtractedPath))
+                {
+                    File.Delete(_pakFileInfo.TempExtractedPath);
+                }
+            }
+            catch { }
+
+            // Close original pak stream if still open
+            if (_pakFileInfo.OriginalPakStream != null)
+            {
+                try
+                {
+                    _pakFileInfo.OriginalPakStream.Dispose();
+                }
+                catch { }
+            }
+        }
+        _pakFileInfo = null;
+
         IsFileLoaded = false;
         HasUnsavedChanges = false;
         WindowTitle = "GTA Handler by VPZ";
         StatusMessage = "Select a game and load a handling.cfg file to begin";
+        OnPropertyChanged(nameof(GameDisplayName));
     }
 
     [RelayCommand]

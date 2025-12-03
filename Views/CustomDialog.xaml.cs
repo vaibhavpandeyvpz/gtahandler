@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using FontAwesome.WPF;
+using FontAwesome.Sharp;
 
 namespace GTAHandler.Views;
 
@@ -64,12 +64,12 @@ public partial class CustomDialog : Window
     {
         var (icon, color) = type switch
         {
-            DialogType.Information => (FontAwesomeIcon.InfoCircle, "#0091cd"),  // Info blue
-            DialogType.Warning => (FontAwesomeIcon.ExclamationTriangle, "#ecb731"),      // Warning yellow
-            DialogType.Error => (FontAwesomeIcon.TimesCircle, "#ed1b2e"),        // Error red
-            DialogType.Question => (FontAwesomeIcon.QuestionCircle, "#0091cd"),     // Info blue
-            DialogType.Success => (FontAwesomeIcon.CheckCircle, "#537b35"),      // Success green
-            _ => (FontAwesomeIcon.InfoCircle, "#0091cd")
+            DialogType.Information => (IconChar.InfoCircle, "#0091cd"),  // Info blue
+            DialogType.Warning => (IconChar.ExclamationTriangle, "#ecb731"),      // Warning yellow
+            DialogType.Error => (IconChar.TimesCircle, "#ed1b2e"),        // Error red
+            DialogType.Question => (IconChar.QuestionCircle, "#0091cd"),     // Info blue
+            DialogType.Success => (IconChar.CheckCircle, "#537b35"),      // Success green
+            _ => (IconChar.InfoCircle, "#0091cd")
         };
 
         var brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color));

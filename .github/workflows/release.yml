@@ -2,11 +2,11 @@ name: Build and Release
 
 on:
   release:
-    types: [ published ]
+    types: [published]
   workflow_dispatch:
     inputs:
       version:
-        description: 'Package version (leave empty to use project version)'
+        description: "Package version (leave empty to use project version)"
         required: false
         type: string
 
@@ -15,59 +15,59 @@ jobs:
     runs-on: windows-latest
     permissions:
       contents: write
-    
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '8.0.x'
-    
-    - name: Restore dependencies
-      run: dotnet restore
-    
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Extract version from tag
-      id: get_version
-      shell: pwsh
-      run: |
-        $version = "${{ github.event.inputs.version }}"
-        if ([string]::IsNullOrEmpty($version)) {
-          if ("${{ github.event_name }}" -eq "release") {
-            $version = "${{ github.event.release.tag_name }}"
-            # Remove 'v' prefix if present
-            $version = $version -replace '^v', ''
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Extract version from tag
+        id: get_version
+        shell: pwsh
+        run: |
+          $version = "${{ github.event.inputs.version }}"
+          if ([string]::IsNullOrEmpty($version)) {
+            if ("${{ github.event_name }}" -eq "release") {
+              $version = "${{ github.event.release.tag_name }}"
+              # Remove 'v' prefix if present
+              $version = $version -replace '^v', ''
+            }
           }
-        }
-        if ([string]::IsNullOrEmpty($version)) {
-          $version = "1.0.0"
-        }
-        echo "VERSION=$version" >> $env:GITHUB_OUTPUT
-        echo "Package version: $version"
-    
-    - name: Publish
-      run: dotnet publish --configuration Release --no-build --output ./publish
-    
-    - name: Create ZIP archive
-      run: |
-        $version = "${{ steps.get_version.outputs.VERSION }}"
-        Compress-Archive -Path ./publish/* -DestinationPath "./GTAHandler-v$version-win-x64.zip"
-      shell: pwsh
+          if ([string]::IsNullOrEmpty($version)) {
+            $version = "1.0.0"
+          }
+          echo "VERSION=$version" >> $env:GITHUB_OUTPUT
+          echo "Package version: $version"
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: tool-package
-        path: ./GTAHandler-*.zip
-    
-    - name: Upload Release Asset
-      if: github.event_name == 'release'
-      uses: softprops/action-gh-release@v1
-      with:
-        files: ./GTAHandler-*.zip
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish
+        run: dotnet publish --configuration Release --no-build --output ./publish
+
+      - name: Create ZIP archive
+        run: |
+          $version = "${{ steps.get_version.outputs.VERSION }}"
+          Compress-Archive -Path ./publish/* -DestinationPath "./GTAHandler-v$version-win-x64.zip"
+        shell: pwsh
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tool-package
+          path: ./GTAHandler-*.zip
+
+      - name: Upload Release Asset
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ./GTAHandler-*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:GTAHandler.ViewModels"
         xmlns:local="clr-namespace:GTAHandler.Views"
-        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}" 
-        Icon="/icon.ico"
+        Icon="/Resources/icon.ico"
         Height="600" Width="960"
         MinHeight="600" MinWidth="960"
         WindowStartupLocation="CenterScreen"
@@ -50,7 +50,7 @@
                     
 <!-- App Icon and Title -->
                                     <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,0">
-                                        <Image Source="/icon.ico" Width="16" Height="16" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <Image Source="/Resources/icon.ico" Width="16" Height="16" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                         <TextBlock Text="{Binding WindowTitle}" FontSize="12" 
                                                    Foreground="{StaticResource TextBrush}" VerticalAlignment="Center"/>
                                     </StackPanel>
@@ -69,7 +69,7 @@
                                         <Setter.Value>
                                             <ControlTemplate TargetType="Button">
                                                 <Border x:Name="border" Background="{TemplateBinding Background}">
-                                                    <fa:ImageAwesome Icon="WindowMinimize" Width="12" Height="12" 
+                                                    <fa:IconImage Icon="WindowMinimize" Width="12" Height="12" 
                                                                      Foreground="{StaticResource TextDimBrush}"
                                                                      VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                 </Border>
@@ -97,7 +97,7 @@
                                         <Setter.Value>
                                             <ControlTemplate TargetType="Button">
                                                 <Border x:Name="border" Background="{TemplateBinding Background}">
-                                                    <fa:ImageAwesome x:Name="MaximizeIcon" Icon="WindowMaximize" Width="12" Height="12" 
+                                                    <fa:IconImage x:Name="MaximizeIcon" Icon="WindowMaximize" Width="12" Height="12" 
                                                                      Foreground="{StaticResource TextDimBrush}"
                                                                      VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                 </Border>
@@ -125,7 +125,7 @@
                                         <Setter.Value>
                                             <ControlTemplate TargetType="Button">
                                                 <Border x:Name="border" Background="{TemplateBinding Background}">
-                                                    <fa:ImageAwesome x:Name="CloseIcon" Icon="Times" Width="12" Height="12" 
+                                                    <fa:IconImage x:Name="CloseIcon" Icon="Times" Width="12" Height="12" 
                                                                      Foreground="{StaticResource TextDimBrush}"
                                                                      VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                 </Border>
@@ -180,14 +180,14 @@
                         <Button Command="{Binding BrowseFileCommand}" 
                                 Margin="0,0,8,0" Style="{StaticResource SecondaryButton}">
                             <StackPanel Orientation="Horizontal">
-                                <fa:ImageAwesome Icon="FolderOpen" Width="14" Height="14" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <fa:IconImage Icon="FolderOpen" Width="14" Height="14" VerticalAlignment="Center" Margin="0,0,6,0"/>
                                 <TextBlock Text="Open" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
                         <Button Command="{Binding SaveFileCommand}" 
                                 Margin="0,0,8,0">
                             <StackPanel Orientation="Horizontal">
-                                <fa:ImageAwesome Icon="Save" Width="14" Height="14" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <fa:IconImage Icon="Save" Width="14" Height="14" VerticalAlignment="Center" Margin="0,0,6,0"/>
                                 <TextBlock Text="Save" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
@@ -195,14 +195,14 @@
                                 Style="{StaticResource SecondaryButton}"
                                 Margin="0,0,8,0">
                             <StackPanel Orientation="Horizontal">
-                                <fa:ImageAwesome Icon="Save" Width="14" Height="14" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <fa:IconImage Icon="Save" Width="14" Height="14" VerticalAlignment="Center" Margin="0,0,6,0"/>
                                 <TextBlock Text="Save As" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
                         <Button Command="{Binding ShowAboutCommand}" 
                                 Style="{StaticResource SecondaryButton}">
                             <StackPanel Orientation="Horizontal">
-                                <fa:ImageAwesome Icon="InfoCircle" Width="14" Height="14" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <fa:IconImage Icon="InfoCircle" Width="14" Height="14" VerticalAlignment="Center" Margin="0,0,6,0"/>
                                 <TextBlock Text="About" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
@@ -257,7 +257,7 @@
                                     <ColumnDefinition Width="32"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                            <fa:ImageAwesome Grid.Column="0" 
+                            <fa:IconImage Grid.Column="0" 
                                        Icon="Search" 
                                        Width="14" Height="14"
                                        VerticalAlignment="Center"
@@ -506,7 +506,7 @@
                                             Margin="0,0,8,0"
                                             ToolTip="Copy values from another vehicle in the same category">
                                         <StackPanel Orientation="Horizontal">
-                                            <fa:ImageAwesome Icon="Copy" Width="12" Height="12" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                            <fa:IconImage Icon="Copy" Width="12" Height="12" VerticalAlignment="Center" Margin="0,0,6,0"/>
                                             <TextBlock Text="Copy From" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </Button>
@@ -515,7 +515,7 @@
                                             Padding="12,6"
                                             ToolTip="Reset to original values">
                                         <StackPanel Orientation="Horizontal">
-                                            <fa:ImageAwesome Icon="Undo" Width="12" Height="12" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                            <fa:IconImage Icon="Undo" Width="12" Height="12" VerticalAlignment="Center" Margin="0,0,6,0"/>
                                             <TextBlock Text="Reset" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </Button>
@@ -531,7 +531,7 @@
                             <GroupBox>
                                 <GroupBox.Header>
                                     <StackPanel Orientation="Horizontal">
-                                        <fa:ImageAwesome Icon="Tag" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <fa:IconImage Icon="Tag" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                         <TextBlock Text="Identity" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </GroupBox.Header>
@@ -553,7 +553,7 @@
                             <GroupBox>
                                 <GroupBox.Header>
                                     <StackPanel Orientation="Horizontal">
-                                        <fa:ImageAwesome Icon="BalanceScale" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <fa:IconImage Icon="BalanceScale" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                         <TextBlock Text="Physics" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </GroupBox.Header>
@@ -644,7 +644,7 @@
                             <GroupBox>
                                 <GroupBox.Header>
                                     <StackPanel Orientation="Horizontal">
-                                        <fa:ImageAwesome Icon="Crosshairs" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <fa:IconImage Icon="Crosshairs" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                         <TextBlock Text="Centre of Mass" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </GroupBox.Header>
@@ -687,7 +687,7 @@
                             <GroupBox>
                                 <GroupBox.Header>
                                     <StackPanel Orientation="Horizontal">
-                                        <fa:ImageAwesome Icon="Tint" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <fa:IconImage Icon="Tint" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                         <TextBlock Text="Buoyancy" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </GroupBox.Header>
@@ -710,7 +710,7 @@
                             <GroupBox>
                                 <GroupBox.Header>
                                     <StackPanel Orientation="Horizontal">
-                                        <fa:ImageAwesome Icon="Circle" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <fa:IconImage Icon="Circle" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                         <TextBlock Text="Traction" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </GroupBox.Header>
@@ -757,7 +757,7 @@
                             <GroupBox>
                                 <GroupBox.Header>
                                     <StackPanel Orientation="Horizontal">
-                                        <fa:ImageAwesome Icon="Cog" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <fa:IconImage Icon="Cog" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                         <TextBlock Text="Transmission" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </GroupBox.Header>
@@ -848,7 +848,7 @@
                             <GroupBox>
                                 <GroupBox.Header>
                                     <StackPanel Orientation="Horizontal">
-                                        <fa:ImageAwesome Icon="Stop" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <fa:IconImage Icon="Stop" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                         <TextBlock Text="Brakes" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </GroupBox.Header>
@@ -894,7 +894,7 @@
                             <GroupBox>
                                 <GroupBox.Header>
                                     <StackPanel Orientation="Horizontal">
-                                        <fa:ImageAwesome Icon="Gamepad" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <fa:IconImage Icon="Gamepad" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                         <TextBlock Text="Steering" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </GroupBox.Header>
@@ -917,7 +917,7 @@
                             <GroupBox>
                                 <GroupBox.Header>
                                     <StackPanel Orientation="Horizontal">
-                                        <fa:ImageAwesome Icon="Wrench" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <fa:IconImage Icon="Wrench" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                         <TextBlock Text="Suspension" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </GroupBox.Header>
@@ -1014,7 +1014,7 @@
                             <GroupBox>
                                 <GroupBox.Header>
                                     <StackPanel Orientation="Horizontal">
-                                        <fa:ImageAwesome Icon="Cube" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <fa:IconImage Icon="Cube" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                         <TextBlock Text="Miscellaneous" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </GroupBox.Header>
@@ -1067,7 +1067,7 @@
                             <GroupBox>
                                 <GroupBox.Header>
                                     <StackPanel Orientation="Horizontal">
-                                        <fa:ImageAwesome Icon="Flag" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <fa:IconImage Icon="Flag" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                         <TextBlock Text="Flags" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </GroupBox.Header>
@@ -1103,7 +1103,7 @@
                             <GroupBox>
                                 <GroupBox.Header>
                                     <StackPanel Orientation="Horizontal">
-                                        <fa:ImageAwesome Icon="LightbulbOutline" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <fa:IconImage Icon="Lightbulb" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                         <TextBlock Text="Lights" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </GroupBox.Header>
@@ -1142,7 +1142,7 @@
                             <GroupBox Visibility="{Binding SelectedGameType, Converter={StaticResource GameTypeVisibility}, ConverterParameter=SAOnly}">
                                 <GroupBox.Header>
                                     <StackPanel Orientation="Horizontal">
-                                        <fa:ImageAwesome Icon="Film" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <fa:IconImage Icon="Film" Width="14" Height="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                         <TextBlock Text="Animation" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </GroupBox.Header>
@@ -1170,7 +1170,7 @@
                         Visibility="{Binding ActiveTab, Converter={StaticResource NullToVisibility}, ConverterParameter=Invert}">
                     <StackPanel HorizontalAlignment="Center" 
                                 VerticalAlignment="Center">
-                        <fa:ImageAwesome Icon="Car" Width="56" Height="56" Foreground="{StaticResource TextDimBrush}" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+                        <fa:IconImage Icon="Car" Width="56" Height="56" Foreground="{StaticResource TextDimBrush}" HorizontalAlignment="Center" Margin="0,0,0,20"/>
                         <TextBlock Text="Select a vehicle to edit"
                                    FontSize="18"
                                    FontWeight="SemiBold"
@@ -1201,7 +1201,7 @@
                            Foreground="{StaticResource TextDimBrush}"/>
                 
                 <TextBlock Grid.Column="1" 
-                           Text="{Binding SelectedGameType, Converter={StaticResource GameTypeToDisplayName}}" 
+                           Text="{Binding GameDisplayName}" 
                            FontWeight="SemiBold" 
                            Foreground="{Binding SelectedGameType, Converter={StaticResource GameTypeToColor}}"
                            VerticalAlignment="Center"
